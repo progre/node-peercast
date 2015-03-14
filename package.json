@@ -1,0 +1,41 @@
+{
+  "name": "peercast",
+  "version": "0.0.0",
+  "description": "PeerCast client for node.js",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "node_modules/.bin/gulp test"
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/progre/node-peercast.git"
+  },
+  "keywords": [
+    "PeerCast",
+    "P2P",
+    "livestreaming"
+  ],
+  "author": "progre",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/progre/node-peercast/issues"
+  },
+  "homepage": "https://github.com/progre/node-peercast",
+  "devDependencies": {
+    "coffee-script": "^1.9.1",
+    "del": "^1.1.1",
+    "gulp": "^3.8.11",
+    "gulp-mocha": "^2.0.0",
+    "gulp-notify": "^2.2.0",
+    "gulp-plumber": "^1.0.0",
+    "gulp-sourcemaps": "^1.5.0",
+    "gulp-tslint": "^1.4.4",
+    "gulp-typescript": "^2.4.2",
+    "merge2": "^0.3.1",
+    "power-assert": "^0.10.2",
+    "require-dir": "^0.1.0",
+    "run-sequence": "^1.0.2",
+    "typescript-require": "^0.2.8"
+  }
+}
