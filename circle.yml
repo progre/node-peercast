@@ -4,3 +4,4 @@ machine:
 dependencies:
   pre:
     - git submodule init
+    - git submodule update
