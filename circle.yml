@@ -3,5 +3,4 @@ machine:
     version: "0.12"
 dependencies:
   pre:
-    - git submodule init
-    - git submodule update
+    - git submodule update --init
