@@ -6,6 +6,6 @@ PeerCast client for node.js
 Build & Test
 ----
 
-1. ```git clone https://github.com/progre/node-peercast.git```
-2. ```npm install``
-2. ```npm test``
+1. `git clone https://github.com/progre/node-peercast.git`
+2. `npm install`
+2. `npm test`
