@@ -10,10 +10,10 @@ import tslint = require('gulp-tslint');
 import typescript = require('gulp-typescript');
 var notify = require('gulp-notify');
 
-var SRC_PATH = ['src/lib/index.ts'];
+var SRC_PATH = ['src/lib/**/*.ts'];
 var DST_PATH = 'lib/';
 var CLEAN_PATH = ['lib/', './index.d.ts'];
-var DEFINITELY_PATH = './';
+var DEFINITELY_PATH = 'tmp-typings/';
 
 gulp.task('ts', callback =>
     runSequence('ts-lint', 'ts-build', callback));
@@ -35,8 +35,8 @@ gulp.task('ts-release-build',() => {
     var tsResult = gulp.src(SRC_PATH)
         .pipe(typescript(tsProject(), undefined, tsReporter()));
     return merge([
-        tsResult.dts.pipe(gulp.dest(DEFINITELY_PATH)),
-        tsResult.js.pipe(gulp.dest(DST_PATH))
+        tsResult.js.pipe(gulp.dest(DST_PATH)),
+        tsResult.dts.pipe(gulp.dest(DEFINITELY_PATH))
     ]);
 });
 
@@ -51,6 +51,7 @@ gulp.task('ts-clean', callback => {
 
 function tsProject() {
     return typescript.createProject({
+        target: 'ES6',
         module: 'commonjs',
         noImplicitAny: true,
         declarationFiles: true
@@ -68,7 +69,8 @@ function tsLintReporter(output: tslint.Output[], file: vinyl, options: tslint.Op
             + ': ' + failure.failure;
         console.warn(YELLOW + message + RESET);
     });
-    notify.onError()(filePath + ' ' + output.length + ' warn(s)');
+    notify.onError({ sound: true })
+        (filePath + ' ' + output.length + ' warn(s)');
 }
 
 function tsReporter() {

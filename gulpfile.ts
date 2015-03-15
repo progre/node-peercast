@@ -27,10 +27,15 @@ gulp.task('build-release', ['clean'], callback => {
 });
 gulp.task('test',() => {
     require('coffee-script/register');
-    global.assert = require('power-assert');
-    return gulp.src('test/index_spec.coffee', { read: false })
-        .pipe(plumber({ errorHandler: notify.onError('<%= error.message %>') }))
-        .pipe(mocha({ reporter: 'nyan' }));
+    return gulp.src('test/**/*.coffee', { read: false })
+        .pipe(plumber(
+        {
+            errorHandler: notify.onError({
+                sound: true,
+                message: '<%= error.message %>'
+            })
+        }))
+        .pipe(mocha({ reporter: 'landing' }));
 });
 gulp.task('watch', callback => {
     runSequence(['global-watch', 'ts-watch'], callback);
