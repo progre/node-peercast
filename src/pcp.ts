@@ -41,7 +41,7 @@ export class Hello {
     }
 }
 
-export class olleh extends Hello {
+export class Olleh extends Hello {
     toAtom() {
         var atom = Atom.createContainer(OLLEH);
         atom.add(Atom.createContent(HELLO_AGENT, this.agent));

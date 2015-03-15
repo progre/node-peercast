@@ -10,7 +10,7 @@ class PcpSocket extends events.EventEmitter {
     }
 
     hello() {
-        var hello = new pcp.Hello(
+        var atom = new pcp.Hello(
             AGENT_NAME,
             0,
             new Buffer(0),
@@ -21,7 +21,8 @@ class PcpSocket extends events.EventEmitter {
             0,
             new Buffer(0)
             );
-        hello.toAtom();
+        atom.toAtom();
+        this.send(hello);
     }
     //put(name: string, value: any) {
     //    putil.deleteIf(this.children,(c: Atom) => c.name === name);

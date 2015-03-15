@@ -10,7 +10,7 @@ import tslint = require('gulp-tslint');
 import typescript = require('gulp-typescript');
 var notify = require('gulp-notify');
 
-var SRC_PATH = ['src/lib/**/*.ts'];
+var SRC_PATH = ['src/**/*.ts'];
 var DST_PATH = 'lib/';
 var CLEAN_PATH = ['lib/', './index.d.ts'];
 var DEFINITELY_PATH = 'tmp-typings/';

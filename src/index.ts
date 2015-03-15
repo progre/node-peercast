@@ -1,3 +1,3 @@
-/// <reference path="../../typings.d.ts" />
+/// <reference path="../typings.d.ts" />
 import PeerCast = require('./peercast');
 export = PeerCast;
