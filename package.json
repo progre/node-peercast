@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/progre/node-peercast",
   "devDependencies": {
+    "chalk": "^1.0.0",
     "coffee-script": "^1.9.1",
     "del": "^1.1.1",
     "gulp": "^3.8.11",

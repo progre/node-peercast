@@ -1,19 +1,20 @@
 assert = require 'power-assert'
+PcpHub = require '../lib/pcphub'
 PcpSocket = require '../lib/pcpsocket'
 
 describe 'PcpSocket', ->
-  describe '#new', ->
-    it 'exists', -> assert new PcpSocket(17144, '127.0.0.1:17145') != null
-  context 'when exists', ->
-    self = new PcpSocket(17144, '127.0.0.1:17145')
-    remote = new PcpSocket(17145, '127.0.0.1:17144')
-    describe '#hello', (done) ->
-      it 'do it', ->
-        remote.on 'hello', ->
+  hub = new PcpHub
+  describe '#hello', (done) ->
+    it 'do it', ->
+      hub.listen 17145, (socket) ->
+        socket.on 'hello', ->
           done()
-        self.hello()
-    describe '#olleh', (done) ->
-      it 'do it', ->
-        remote.on 'olleh', ->
+      hub.connect '127.0.0.1', (socket) ->
+        socket.hello()
+  describe '#olleh', (done) ->
+    it 'do it', ->
+      hub.listen 17145, (socket) ->
+        socket.on 'olleh', ->
           done()
-        self.olleh()
+      hub.connect '127.0.0.1', (socket) ->
+        socket.olleh()

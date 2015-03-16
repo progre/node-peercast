@@ -42,7 +42,7 @@ gulp.task('ts-release-build',() => {
 
 gulp.task('ts-watch',() => {
     gulp.watch(SRC_PATH,() =>
-        runSequence('ts', 'test'));
+        runSequence('cutoff-line', 'ts', 'test'));
 });
 
 gulp.task('ts-clean', callback => {

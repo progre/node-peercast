@@ -1,3 +1,4 @@
+/// <reference path="typings/chalk/chalk.d.ts" />
 /// <reference path="typings/del/del.d.ts" />
 /// <reference path="typings/gulp/gulp.d.ts" />
 /// <reference path="typings/gulp-mocha/gulp-mocha.d.ts" />

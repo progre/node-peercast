@@ -1,4 +1,5 @@
-/// <reference path="typings.d.ts" />
+﻿/// <reference path="typings.d.ts" />
+import chalk = require('chalk');
 import del = require('del');
 import runSequence = require('run-sequence');
 import gulp = require('gulp');
@@ -41,5 +42,12 @@ gulp.task('watch', callback => {
     runSequence(['global-watch', 'ts-watch'], callback);
 });
 gulp.task('global-watch',() => {
-    gulp.watch('test/**/*', ['test']);
+    gulp.watch('test/**/*', ['cutoff-line', 'test']);
+});
+gulp.task('cutoff-line',() => {
+    console.log();
+    console.log();
+    console.log(chalk.gray('✄------------------------------------ｷﾘﾄﾘ線------------------------------------'));
+    console.log();
+    console.log();
 });

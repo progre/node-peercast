@@ -56,8 +56,7 @@
     "switch-default": true,
     "triple-equals": [true, "allow-null-check"],
     "typedef": [true,
-      "property-declaration",
-      "member-variable-declaration"
+      "property-declaration"
     ],
     "typedef-whitespace": [true, {
       "call-signature": "nospace",
