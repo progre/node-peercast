@@ -1,5 +1,5 @@
 assert = require 'power-assert'
-PeerCast = require '../lib/peercast'
+PeerCast = require '../lib/'
 
 describe 'PeerCast', ->
   describe '#new', ->

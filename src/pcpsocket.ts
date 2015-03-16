@@ -1,6 +1,7 @@
 import events = require('events');
 import net = require('net');
 import Atom = require('./atom');
+import AtomType = require('./atomtype');
 import pcp = require('./pcp');
 
 const AGENT_NAME = 'node-peercast';
@@ -8,6 +9,7 @@ const AGENT_NAME = 'node-peercast';
 class PcpSocket extends events.EventEmitter {
     constructor(private socket: net.Socket) {
         super();
+        // TODO: éÛêMé¿ëï
     }
 
     hello(port: number) {
@@ -27,25 +29,21 @@ class PcpSocket extends events.EventEmitter {
 
     private send<T>(atom: Atom) {
         var stream = this.socket;
-        if (atom.name().length !== 4) {
-            throw new Error('Invalid name: ' + atom.name());
+        if (atom.name.length !== 4) {
+            throw new Error('Invalid name: ' + atom.name);
         }
-        stream.write(atom.name());
-        switch (atom.type()) {
-            case Atom.Type.CONTAINER:
-                throw new Error('Not implemented.');
-            case Atom.Type.BYTE:
-                throw new Error('Not implemented.');
-            case Atom.Type.SHORT:
-                throw new Error('Not implemented.');
-            case Atom.Type.INT:
-                throw new Error('Not implemented.');
-            case Atom.Type.STRING:
-                throw new Error('Not implemented.');
-            case Atom.Type.GUID:
-                throw new Error('Not implemented.');
-            default:
-                throw new Error('Invalid type: ' + atom.type());
+        stream.write(atom.name);
+        var buffer = new Buffer(4);
+        if (atom.type === AtomType.CONTAINER) {
+            buffer.writeInt32LE(0x80000000 | atom.children.size, 0);
+            stream.write(buffer);
+            atom.children.forEach(child => {
+                this.send(child);
+            });
+        } else {
+            buffer.writeUInt32LE(atom.content.length, 0);
+            stream.write(buffer);
+            stream.write(atom.content);
         }
     }
 }

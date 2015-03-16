@@ -1,10 +1,13 @@
 assert = require 'power-assert'
+PeerCast = require '../lib/'
 PcpHub = require '../lib/pcphub'
+specHelper = require './spechelper'
 
 describe 'PcpHub', ->
   hub = new PcpHub
   describe '#connect', ->
     it 'do it', (done) ->
-      hub.listen 17145, (socket) ->
+      port = specHelper.getRandomPort()
+      hub.listen port, (socket) ->
         done()
-      hub.connect '127.0.0.1', (socket) ->
+      hub.connect '127.0.0.1', port, (socket) ->

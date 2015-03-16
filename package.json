@@ -38,6 +38,10 @@
     "power-assert": "^0.10.2",
     "require-dir": "^0.1.0",
     "run-sequence": "^1.0.2",
+    "source-map-support": "^0.2.10",
     "typescript-require": "^0.2.8"
+  },
+  "dependencies": {
+    "es6-shim": "^0.27.1"
   }
 }

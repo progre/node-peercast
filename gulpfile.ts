@@ -36,7 +36,7 @@ gulp.task('test',() => {
                 message: '<%= error.message %>'
             })
         }))
-        .pipe(mocha({ reporter: 'landing' }));
+        .pipe(mocha({ reporter: 'nyan' }));
 });
 gulp.task('watch', callback => {
     runSequence(['global-watch', 'ts-watch'], callback);
@@ -47,7 +47,7 @@ gulp.task('global-watch',() => {
 gulp.task('cutoff-line',() => {
     console.log();
     console.log();
-    console.log(chalk.gray('✄------------------------------------ｷﾘﾄﾘ線------------------------------------'));
+    console.log(chalk.green('✄------------------------------------ｷﾘﾄﾘ線------------------------------------✄'));
     console.log();
     console.log();
 });

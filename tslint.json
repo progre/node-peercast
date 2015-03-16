@@ -22,7 +22,6 @@
       "variables-before-functions"
     ],
     "no-arg": true,
-    "no-bitwise": true,
     "no-console": [true,
       "debug",
       "info",
@@ -34,7 +33,6 @@
     "no-debugger": true,
     "no-duplicate-key": true,
     "no-duplicate-variable": true,
-    "no-empty": true,
     "no-eval": true,
     "no-string-literal": true,
     "no-switch-case-fall-through": true,

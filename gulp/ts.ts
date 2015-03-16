@@ -41,7 +41,7 @@ gulp.task('ts-release-build',() => {
 });
 
 gulp.task('ts-watch',() => {
-    gulp.watch(SRC_PATH,() =>
+    gulp.watch('**/*.ts',() =>
         runSequence('cutoff-line', 'ts', 'test'));
 });
 

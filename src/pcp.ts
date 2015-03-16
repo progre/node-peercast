@@ -28,15 +28,15 @@ export class Hello {
 
     toAtom() {
         var atom = Atom.createContainer(HELLO);
-        atom.addContent(HELLO_AGENT, Atom.Type.STRING, this.agent);
-        atom.addContent(HELLO_OS_TYPE, Atom.Type.INT, this.osType);
-        atom.addContent(HELLO_SESSION_ID, Atom.Type.GUID, this.sessionId);
-        atom.addContent(HELLO_PORT, Atom.Type.SHORT, this.port);
-        atom.addContent(HELLO_PING, Atom.Type.SHORT, this.ping);
-        atom.addContent(HELLO_PONG, Atom.Type.SHORT, this.pong);
-        atom.addContent(HELLO_REMOTE_IP, Atom.Type.INT, this.remoteIp);
-        atom.addContent(HELLO_VERSION, Atom.Type.INT, this.version);
-        atom.addContent(HELLO_BC_ID, Atom.Type.GUID, this.bcId);
+        atom.addStringContent(HELLO_AGENT, this.agent);
+        atom.addIntContent(HELLO_OS_TYPE, this.osType);
+        atom.addGuidContent(HELLO_SESSION_ID, this.sessionId);
+        atom.addShortContent(HELLO_PORT, this.port);
+        atom.addShortContent(HELLO_PING, this.ping);
+        atom.addShortContent(HELLO_PONG, this.pong);
+        atom.addIntContent(HELLO_REMOTE_IP, this.remoteIp);
+        atom.addIntContent(HELLO_VERSION, this.version);
+        atom.addGuidContent(HELLO_BC_ID, this.bcId);
         return atom;
     }
 }
@@ -44,11 +44,11 @@ export class Hello {
 export class Olleh extends Hello {
     toAtom() {
         var atom = Atom.createContainer(OLLEH);
-        atom.addContent(HELLO_AGENT, Atom.Type.STRING, this.agent);
-        atom.addContent(HELLO_SESSION_ID, Atom.Type.GUID, this.sessionId);
-        atom.addContent(HELLO_PORT, Atom.Type.SHORT, this.port);
-        atom.addContent(HELLO_REMOTE_IP, Atom.Type.INT, this.remoteIp);
-        atom.addContent(HELLO_VERSION, Atom.Type.INT, this.version);
+        atom.addStringContent(HELLO_AGENT, this.agent);
+        atom.addGuidContent(HELLO_SESSION_ID, this.sessionId);
+        atom.addShortContent(HELLO_PORT, this.port);
+        atom.addIntContent(HELLO_REMOTE_IP, this.remoteIp);
+        atom.addIntContent(HELLO_VERSION, this.version);
         return atom;
     }
 }
