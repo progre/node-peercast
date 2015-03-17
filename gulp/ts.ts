@@ -21,7 +21,7 @@ gulp.task('ts-release', callback =>
     runSequence('ts-release-build', 'ts-lint', callback));
 
 gulp.task('ts-lint',() =>
-    gulp.src(['**/*.ts', '!node_modules/**', '!typings/**'])
+    gulp.src(['**/*.ts', '!**/*.d.ts', '!node_modules/**', '!typings/**'])
         .pipe(tslint())
         .pipe(tslint.report(tsLintReporter)));
 

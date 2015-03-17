@@ -1,3 +1,12 @@
+gulp/
 src/
 test/
+typings/
+.gitmodules
+.npmignore
+.travis.yml
+circle.yml
+gulpfile.ts
 log.json
+tslint.json
+typings.d.ts

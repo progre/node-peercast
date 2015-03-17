@@ -1,10 +1,10 @@
 {
   "name": "node-peercast",
-  "version": "0.0.0",
+  "version": "0.0.3",
   "description": "PeerCast client for node.js",
   "main": "lib/index.js",
   "scripts": {
-    "install": "node_modules/.bin/gulp build",
+    "pre-test": "node_modules/.bin/gulp build",
     "test": "node_modules/.bin/gulp test"
   },
   "repository": {
