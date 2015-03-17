@@ -1,78 +1,80 @@
-import AtomType = require('./atomtype');
-
 class Atom {
-    static createContent(name: string, type: AtomType, content: Buffer) {
-        return new Atom(name, type, content, null);
+    static createContent(name: string, content: Buffer) {
+        return new Atom(name, content, null);
     }
 
-    static createContainer(name: string) {
-        return new Atom(name, AtomType.CONTAINER, null, new Map<string, Atom>());
+    static createIntContent(name: string, content: number) {
+        var buffer = new Buffer(4);
+        buffer.writeUInt32LE(content, 0);
+        return Atom.createContent(name, buffer);
+    }
+
+    static createContainer(name: string, children: Atom[] = []) {
+        return new Atom(name, null, children);
     }
 
     constructor(
         private _name: string,
-        private _type: AtomType,
         private _content: Buffer,
-        private _children: Map<string, Atom>) {
+        private _children: Atom[]) {
     }
 
     get name() {
         return this._name;
     }
 
-    get type() {
-        return this._type;
-    }
-
     get content() {
-        if (this._type === AtomType.CONTAINER) {
-            throw new Error('It\'s container.');
+        if (this._content == null) {
+            throw new Error('It\'s not content.');
         }
         return this._content;
     }
 
     get children() {
-        if (this._type !== AtomType.CONTAINER) {
-            throw new Error('It\'s content.');
+        if (this._children == null) {
+            throw new Error('It\'s not container.');
         }
         return this._children;
     }
 
-    add(atom: Atom) {
-        if (this._type !== AtomType.CONTAINER) {
-            throw new Error('It\'s content.');
-        }
-        this._children.set(atom._name, atom);
+    isContent() {
+        return this._content != null;
     }
 
-    addContent(name: string, type: AtomType, content: Buffer) {
-        this.add(Atom.createContent(name, type, content));
+    isContainer() {
+        return this._children != null;
     }
 
-    addByteContent(name: string, content: number) {
+    push(atom: Atom) {
+        this._children.push(atom);
+    }
+
+    pushContent(name: string, content: Buffer) {
+        this.push(Atom.createContent(name, content));
+    }
+
+    pushByteContent(name: string, content: number) {
         var buffer = new Buffer(1);
         buffer.writeUInt8(content, 0);
-        this.add(Atom.createContent(name, AtomType.BYTE, buffer));
+        this.push(Atom.createContent(name, buffer));
     }
 
-    addShortContent(name: string, content: number) {
+    pushShortContent(name: string, content: number) {
         var buffer = new Buffer(2);
         buffer.writeUInt16LE(content, 0);
-        this.add(Atom.createContent(name, AtomType.SHORT, buffer));
+        this.push(Atom.createContent(name, buffer));
     }
 
-    addIntContent(name: string, content: number) {
-        var buffer = new Buffer(4);
-        buffer.writeUInt32LE(content, 0);
-        this.add(Atom.createContent(name, AtomType.INT, buffer));
+    pushIntContent(name: string, content: number) {
+        this.push(Atom.createIntContent(name, content));
     }
 
-    addStringContent(name: string, content: string) {
-        this.add(Atom.createContent(name, AtomType.STRING, new Buffer(content)));
+    pushStringContent(name: string, content: string) {
+        this.push(Atom.createContent(name, new Buffer(content)));
     }
 
-    addGuidContent(name: string, content: Buffer) {
-        this.add(Atom.createContent(name, AtomType.GUID, content));
+    pushGuidContent(name: string, content: Buffer) {
+        this.push(Atom.createContent(name, content));
     }
 }
 

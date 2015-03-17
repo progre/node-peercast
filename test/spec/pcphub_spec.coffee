@@ -1,6 +1,6 @@
 assert = require 'power-assert'
-PeerCast = require '../lib/'
-PcpHub = require '../lib/pcphub'
+PeerCast = require '../../lib/'
+PcpHub = require '../../lib/pcphub'
 specHelper = require './spechelper'
 
 describe 'PcpHub', ->

@@ -1,5 +1,5 @@
 {
-  "name": "peercast",
+  "name": "node-peercast",
   "version": "0.0.0",
   "description": "PeerCast client for node.js",
   "main": "lib/index.js",
@@ -7,7 +7,6 @@
     "install": "node_modules/.bin/gulp build",
     "test": "node_modules/.bin/gulp test"
   },
-  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/progre/node-peercast.git"
@@ -42,6 +41,7 @@
     "typescript-require": "^0.2.8"
   },
   "dependencies": {
-    "es6-shim": "^0.27.1"
+    "es6-shim": "^0.27.1",
+    "log4js": "^0.6.22"
   }
 }

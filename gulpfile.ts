@@ -1,4 +1,5 @@
 ﻿/// <reference path="typings.d.ts" />
+require('coffee-script/register');
 import chalk = require('chalk');
 import del = require('del');
 import runSequence = require('run-sequence');
@@ -27,8 +28,7 @@ gulp.task('build-release', ['clean'], callback => {
     runSequence('ts-release', callback);
 });
 gulp.task('test',() => {
-    require('coffee-script/register');
-    return gulp.src('test/**/*.coffee', { read: false })
+    return gulp.src('test/spec/**/*.coffee', { read: false })
         .pipe(plumber(
         {
             errorHandler: notify.onError({
@@ -37,6 +37,11 @@ gulp.task('test',() => {
             })
         }))
         .pipe(mocha({ reporter: 'nyan' }));
+});
+gulp.task('feature', () => {
+    return gulp.src('test/feature/**/*.coffee', { read: false })
+        .pipe(mocha({ reporter: 'nyan' }))
+        .on('end', process.exit);
 });
 gulp.task('watch', callback => {
     runSequence(['global-watch', 'ts-watch'], callback);

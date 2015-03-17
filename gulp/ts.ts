@@ -16,9 +16,9 @@ var CLEAN_PATH = ['lib/', './index.d.ts'];
 var DEFINITELY_PATH = 'tmp-typings/';
 
 gulp.task('ts', callback =>
-    runSequence('ts-lint', 'ts-build', callback));
+    runSequence('ts-build', 'ts-lint', callback));
 gulp.task('ts-release', callback =>
-    runSequence('ts-lint', 'ts-release-build', callback));
+    runSequence('ts-release-build', 'ts-lint', callback));
 
 gulp.task('ts-lint',() =>
     gulp.src(['**/*.ts', '!node_modules/**', '!typings/**'])

@@ -1,54 +1,74 @@
+import log4js = require('log4js');
 import Atom = require('./atom');
 
-export var HELLO = 'helo';
-export var OLLEH = 'oleh';
-export var HELLO_AGENT = 'agnt';
-export var HELLO_OS_TYPE = 'ostp';
-export var HELLO_SESSION_ID = 'sid\0';
-export var HELLO_PORT = 'port';
-export var HELLO_PING = 'ping';
-export var HELLO_PONG = 'pong';
-export var HELLO_REMOTE_IP = 'rip\0';
-export var HELLO_VERSION = 'ver\0';
-export var HELLO_BC_ID = 'bcid';
-export var HELLO_DISABLE = 'dis\0';
+var logger = log4js.getLogger();
 
-export class Hello {
-    constructor(
-        public agent: string,
-        public osType: number,
-        public sessionId: Buffer,
-        public port: number,
-        public ping: number,
-        public pong: any,
-        public remoteIp: number,
-        public version: number,
-        public bcId: Buffer) {// byte[16]
-    }
+var HELLO = 'helo';
+var OLLEH = 'oleh';
+var HELLO_AGENT = 'agnt';
+var HELLO_OS_TYPE = 'ostp';
+var HELLO_SESSION_ID = 'sid\0';
+var HELLO_PORT = 'port';
+var HELLO_PING = 'ping';
+var HELLO_VERSION = 'ver\0';
+var HELLO_BC_ID = 'bcid';
+//var OLLEH_PONG = 'pong';
+var OLLEH_REMOTE_IP = 'rip\0';
+//var OLLEH_DISABLE = 'dis\0';
 
-    toAtom() {
-        var atom = Atom.createContainer(HELLO);
-        atom.addStringContent(HELLO_AGENT, this.agent);
-        atom.addIntContent(HELLO_OS_TYPE, this.osType);
-        atom.addGuidContent(HELLO_SESSION_ID, this.sessionId);
-        atom.addShortContent(HELLO_PORT, this.port);
-        atom.addShortContent(HELLO_PING, this.ping);
-        atom.addShortContent(HELLO_PONG, this.pong);
-        atom.addIntContent(HELLO_REMOTE_IP, this.remoteIp);
-        atom.addIntContent(HELLO_VERSION, this.version);
-        atom.addGuidContent(HELLO_BC_ID, this.bcId);
-        return atom;
+var QUIT = 'quit';
+
+export function toName(simpleName: string) {
+    switch (simpleName) {
+        case HELLO:
+            return 'hello';
+        case OLLEH:
+            return 'olleh';
+        case QUIT:
+            return 'quit';
+        default:
+            logger.warn('Unsupported name: ' + simpleName);
+            return simpleName;
     }
 }
 
-export class Olleh extends Hello {
-    toAtom() {
-        var atom = Atom.createContainer(OLLEH);
-        atom.addStringContent(HELLO_AGENT, this.agent);
-        atom.addGuidContent(HELLO_SESSION_ID, this.sessionId);
-        atom.addShortContent(HELLO_PORT, this.port);
-        atom.addIntContent(HELLO_REMOTE_IP, this.remoteIp);
-        atom.addIntContent(HELLO_VERSION, this.version);
-        return atom;
-    }
+export function createHello(
+    agent: string,
+    osType: number,
+    sessionId: Buffer,
+    port: number,
+    ping: number,
+    version: number,
+    bcId: Buffer
+    ) {
+    var atom = Atom.createContainer(HELLO);
+    atom.pushStringContent(HELLO_AGENT, agent);
+    atom.pushIntContent(HELLO_OS_TYPE, osType);
+    atom.pushGuidContent(HELLO_SESSION_ID, sessionId);
+    atom.pushShortContent(HELLO_PORT, port);
+    atom.pushShortContent(HELLO_PING, ping);
+    atom.pushIntContent(HELLO_VERSION, version);
+    atom.pushGuidContent(HELLO_BC_ID, bcId);
+    return atom;
+}
+
+export function createOlleh(
+    agent: string,
+    sessionId: Buffer,
+    port: number,
+    remoteIp: number,
+    version: number
+    ) {
+    var atom = Atom.createContainer(OLLEH);
+    atom.pushStringContent(HELLO_AGENT, agent);
+    atom.pushGuidContent(HELLO_SESSION_ID, sessionId);
+    atom.pushShortContent(HELLO_PORT, port);
+    //atom.pushShortContent(HELLO_PONG, pong);
+    atom.pushIntContent(OLLEH_REMOTE_IP, remoteIp);
+    atom.pushIntContent(HELLO_VERSION, version);
+    return atom;
+}
+
+export function createQuit() {
+    return Atom.createIntContent(QUIT, 0);
 }
