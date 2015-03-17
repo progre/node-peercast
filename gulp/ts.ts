@@ -42,7 +42,7 @@ gulp.task('ts-release-build',() => {
 
 gulp.task('ts-watch',() => {
     gulp.watch('**/*.ts',() =>
-        runSequence('cutoff-line', 'ts', 'test'));
+        runSequence('cutoff-line', 'ts', 'test-continue'));
 });
 
 gulp.task('ts-clean', callback => {
