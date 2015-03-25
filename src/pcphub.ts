@@ -56,13 +56,6 @@ class PcpHub {
                 + '\r\n');
         });
         readHTTPHeader(socket).then(header => {
-
-        });
-        var radableListener = () => {
-            var data = reader.read(socket);
-            if (data == null) {
-                return;
-            }
             var psocket = new PcpSocket(socket);
             logger.debug('BODY: ' + socket.read());
             psocket.on('olleh',() => {
@@ -73,7 +66,6 @@ class PcpHub {
             });
             psocket.hello(7147);
         });
-        socket.on('readable', radableListener);
     }
 
     close() {
