@@ -11,32 +11,42 @@ describe 'PcpSocket', ->
       port = specHelper.getRandomPort()
       hub.listen port, (socket) ->
         socket.on 'hello', ->
+          socket.quit()
+          hub.close()
           done()
-      hub.connect '127.0.0.1', port, (socket) ->
-        socket.sendPCPHeader()
-        socket.hello 0
-    it 'do it with http header', (done) ->
-      port = specHelper.getRandomPort()
-      hub.listen port, (socket) ->
-        socket.on 'hello', ->
-          done()
-      hub.connect '127.0.0.1', port, (socket) ->
-        socket.sendHTTPHeader '00000000000000000000000000000000'
-        socket.hello 0
+      hub.connect '127.0.0.1', port
+        .then (socket) ->
+          socket.sendPCPHeader()
+          socket.hello 0
+    # it 'do it with http header', (done) ->
+    #   port = specHelper.getRandomPort()
+    #   hub.listen port, (socket) ->
+    #     socket.on 'hello', ->
+    #       socket.quit()
+    #       hub.close()
+    #       done()
+    #   hub.connect '127.0.0.1', port, (socket) ->
+    #     socket.sendHTTPHeader '00000000000000000000000000000000'
+    #     socket.hello 0
   describe '#olleh', ->
     it 'do it with pcp header', (done) ->
       port = specHelper.getRandomPort()
       hub.listen port, (socket) ->
         socket.on 'olleh', ->
+          socket.quit()
+          hub.close()
           done()
-      hub.connect '127.0.0.1', port, (socket) ->
-        socket.sendPCPHeader()
-        socket.olleh()
-    it 'do it with http header', (done) ->
-      port = specHelper.getRandomPort()
-      hub.listen port, (socket) ->
-        socket.on 'olleh', ->
-          done()
-      hub.connect '127.0.0.1', port, (socket) ->
-        socket.sendHTTPHeader '00000000000000000000000000000000'
-        socket.olleh()
+      hub.connect '127.0.0.1', port
+        .then (socket) ->
+          socket.sendPCPHeader()
+          socket.olleh()
+    # it 'do it with http header', (done) ->
+    #   port = specHelper.getRandomPort()
+    #   hub.listen port, (socket) ->
+    #     socket.on 'olleh', ->
+    #       socket.quit()
+    #       hub.close()
+    #       done()
+    #   hub.connect '127.0.0.1', port, (socket) ->
+    #     socket.sendHTTPHeader '00000000000000000000000000000000'
+    #     socket.olleh()

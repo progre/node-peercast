@@ -81,6 +81,7 @@ class PcpSocket extends events.EventEmitter {
         }
         logger.info('Send quit: ' + this.localRemote);
         write(this.socket, pcp.createQuit());
+        this.socket.end();
     }
 
     private get localRemote() {

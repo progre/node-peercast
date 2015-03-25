@@ -3,17 +3,17 @@ PeerCast = require '../../lib/'
 PcpHub = require '../../lib/pcphub'
 specHelper = require '../spec/spechelper'
 
-describe 'PeerCast', ->
-  remoteAddress = '127.0.0.1'
-  remotePort = 7144
-  localPort = 7146
-  it 'do it', (done) ->
-    peca = new PeerCast localPort
-    peca.on 'connected', ->
-      peca.on 'end', ->
-        done()
-      peca.quit()
-    peca.connect remoteAddress, remotePort
+# describe 'PeerCast', ->
+#   remoteAddress = '127.0.0.1'
+#   remotePort = 7144
+#   localPort = 7146
+#   it 'do it', (done) ->
+#     peca = new PeerCast localPort
+#     peca.on 'connected', ->
+#       peca.on 'end', ->
+#         done()
+#       peca.quit()
+#     peca.connect remoteAddress, remotePort
 
 # describe 'PeerCast', ->
 #   hub = new PcpHub
@@ -56,3 +56,11 @@ describe 'PeerCast', ->
 #               done()
 #           socket.sendPCPHeader()
 #           socket.hello localPort
+
+describe 'PeerCast', ->
+  remoteAddress = '127.0.0.1'
+  remotePort = 7145
+  localPort = 7146
+  it 'get stream', (done) ->
+    peca = new PeerCast localPort
+    peca.getStream remoteAddress, remotePort, 'e5899d4a1688c08cdbf5830fa60db6e5'

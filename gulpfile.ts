@@ -10,10 +10,10 @@ import mocha = require('gulp-mocha');
 require('require-dir')('./gulp');
 
 gulp.task('default', callback => {
-    runSequence('build', 'test-continue', 'watch', callback);
+    runSequence('build', 'test', 'watch', callback);
 });
 gulp.task('release', callback => {
-    runSequence('build-release', 'test-continue', callback);
+    runSequence('build-release', 'test', callback);
 });
 gulp.task('clean', callback => {
     runSequence(['global-clean', 'ts-clean'], callback);
@@ -28,9 +28,6 @@ gulp.task('build-release', ['clean'], callback => {
     runSequence('ts-release', callback);
 });
 gulp.task('test',() => {
-    runSequence('test-continue', 'quit');
-});
-gulp.task('test-continue',() => {
     return gulp.src('test/spec/**/*.coffee', { read: false })
         .pipe(plumber(
         {
@@ -43,14 +40,13 @@ gulp.task('test-continue',() => {
 });
 gulp.task('feature', () => {
     return gulp.src('test/feature/**/*.coffee', { read: false })
-        .pipe(mocha({ reporter: 'nyan' }))
-        .on('end', process.exit);
+        .pipe(mocha({ reporter: 'nyan' }));
 });
 gulp.task('watch', callback => {
     runSequence(['global-watch', 'ts-watch'], callback);
 });
 gulp.task('global-watch',() => {
-    gulp.watch('test/**/*', ['cutoff-line', 'test-continue']);
+    gulp.watch('test/**/*', ['cutoff-line', 'test']);
 });
 gulp.task('cutoff-line',() => {
     console.log();
@@ -58,7 +54,4 @@ gulp.task('cutoff-line',() => {
     console.log(chalk.green('✄------------------------------------ｷﾘﾄﾘ線------------------------------------✄'));
     console.log();
     console.log();
-});
-gulp.task('quit',() => {
-    process.exit();
 });

@@ -1,5 +1,6 @@
 /// <reference path="typings/chalk/chalk.d.ts" />
 /// <reference path="typings/del/del.d.ts" />
+/// <reference path="typings/es6-promise/es6-promise.d.ts" />
 /// <reference path="typings/gulp/gulp.d.ts" />
 /// <reference path="typings/gulp-mocha/gulp-mocha.d.ts" />
 /// <reference path="typings/gulp-sourcemaps/gulp-sourcemaps.d.ts" />
