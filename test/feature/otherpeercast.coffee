@@ -63,4 +63,4 @@ describe 'PeerCast', ->
   localPort = 7146
   it 'get stream', (done) ->
     peca = new PeerCast localPort
-    peca.getStream remoteAddress, remotePort, 'e5899d4a1688c08cdbf5830fa60db6e5'
+    peca.getStream remoteAddress, remotePort, '0772D40C20BC4F532B04154087188DC4'

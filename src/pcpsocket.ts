@@ -1,5 +1,6 @@
 import events = require('events');
 import net = require('net');
+import stream = require('stream');
 import log4js = require('log4js');
 import Atom = require('./atom');
 import AtomReader = require('./atomreader');
@@ -20,11 +21,13 @@ class PcpSocket extends events.EventEmitter {
             this.emit('close');
         });
         socket.on('end',() => {
-            logger.info('EOS: ' + localRemote);
+            logger.info('EOS: ' + localRemote + ', ' + this.socket.read());
         });
-        socket.on('readable',() => {
-            logger.info('Incomming message: ' + localRemote);
-            var atom = this.reader.read(this.socket);
+        var cache = new stream.PassThrough();
+        socket.on('data',(data: Buffer) => { // TODO: readableバグってるっぽいからなんとかしてほしい
+            cache.write(data);
+            logger.info('Incoming message: ' + localRemote);
+            var atom = this.reader.read(cache);
             if (atom == null) {
                 logger.debug('wait');
                 return;
@@ -58,7 +61,7 @@ class PcpSocket extends events.EventEmitter {
             sessionId,
             port,
             port,
-            0,
+            1218, // TODO: 何でこのバージョン？
             sessionId));
     }
 
@@ -112,5 +115,6 @@ function writeInt32LE(stream: NodeJS.WritableStream, value: number) {
     buffer.writeInt32LE(value, 0);
     stream.write(buffer);
 }
+
 
 export = PcpSocket;

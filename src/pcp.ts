@@ -3,20 +3,20 @@ import Atom = require('./atom');
 
 var logger = log4js.getLogger();
 
-var HELLO = 'helo';
-var OLLEH = 'oleh';
-var HELLO_AGENT = 'agnt';
-var HELLO_OS_TYPE = 'ostp';
-var HELLO_SESSION_ID = 'sid\0';
-var HELLO_PORT = 'port';
-var HELLO_PING = 'ping';
-var HELLO_VERSION = 'ver\0';
-var HELLO_BC_ID = 'bcid';
-//var OLLEH_PONG = 'pong';
-var OLLEH_REMOTE_IP = 'rip\0';
-//var OLLEH_DISABLE = 'dis\0';
-
-var QUIT = 'quit';
+const HELLO = 'helo';
+const OLLEH = 'oleh';
+const HELLO_AGENT = 'agnt';
+const HELLO_OS_TYPE = 'ostp';
+const HELLO_SESSION_ID = 'sid\0';
+const HELLO_PORT = 'port';
+const HELLO_PING = 'ping';
+const HELLO_VERSION = 'ver\0';
+const HELLO_BC_ID = 'bcid';
+//const OLLEH_PONG = 'pong';
+const OLLEH_REMOTE_IP = 'rip\0';
+//const OLLEH_DISABLE = 'dis\0';
+const HOST = 'host';
+const QUIT = 'quit';
 
 export function toName(simpleName: string) {
     switch (simpleName) {
@@ -24,6 +24,8 @@ export function toName(simpleName: string) {
             return 'hello';
         case OLLEH:
             return 'olleh';
+        case HOST:
+            return 'host';
         case QUIT:
             return 'quit';
         default:
