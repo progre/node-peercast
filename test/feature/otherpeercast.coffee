@@ -59,8 +59,8 @@ specHelper = require '../spec/spechelper'
 
 describe 'PeerCast', ->
   remoteAddress = '127.0.0.1'
-  remotePort = 7145
-  localPort = 7146
+  remotePort = 7146
+  localPort = 7148
   it 'get stream', (done) ->
     peca = new PeerCast localPort
-    peca.getStream remoteAddress, remotePort, '0772D40C20BC4F532B04154087188DC4'
+    peca.getStream remoteAddress, remotePort, '3034772341FABEF97800F1C3550C9745'

@@ -20,7 +20,7 @@ class PcpHub {
                     res.end();
                     return;
                 }
-                var id = url[1];
+                //var id = url[1];
                 // idにマッチする配信を持っているか？
                 // 無い
                 res.writeHead(404);
@@ -57,7 +57,37 @@ class PcpHub {
     }
 
     getStream(remoteAddress: string, remotePort: number, channelId: string) {
-        var client = http.get({
+        sendRequestWithHTTPModule(remoteAddress, remotePort, channelId).then(res => {
+            logger.debug('status: ' + res.statusCode);
+            if (res.statusCode === 404) {
+                return;
+            }
+            var socket = new PcpSocket(res.socket);
+            if (res.statusCode === 200) {
+                socket.hello(0);
+                socket.on('olleh',() => {
+                    console.log('olleh!');
+                });
+                return;
+            }
+            if (res.statusCode === 503) {
+                socket.hello(0);
+                return;
+            }
+        });
+    }
+
+    close() {
+        this.servers.forEach(server => {
+            server.close();
+        });
+        this.servers = [];
+    }
+}
+
+function sendRequestWithHTTPModule(remoteAddress: string, remotePort: number, channelId: string) {
+    return new Promise<{ statusCode: number; socket: net.Socket; }>((resolve, reject) => {
+        http.get({
             host: remoteAddress,
             port: remotePort,
             path: '/channel/' + channelId,
@@ -67,29 +97,24 @@ class PcpHub {
                 //'x-peercast-port': 7145
             }
         }, res => {
-                if (res.statusCode === 404) {
-                    return;
-                }
-                if (res.statusCode === 200) {
-                    var socket = new PcpSocket(res.socket);
-                    socket.hello(0);
-                    socket.on('olleh',() => {
-                        console.log('olleh!');
-                    });
-                }
-                if (res.statusCode === 503) {
-                    var socket = new PcpSocket(res.socket);
-                    socket.hello(0);
-                }
+                resolve({
+                    statusCode: res.statusCode,
+                    socket: res.socket
+                });
             });
-    }
+    });
+}
 
-    close() {
-        this.servers.forEach(server => {
-            server.close();
+function sendRequestWithNetModule(remoteAddress: string, remotePort: number, channelId: string) {
+    return new Promise<{ statusCode: number; socket: net.Socket; }>((resolve, reject) => {
+        var socket = net.connect(remotePort, remoteAddress,() => {
+            socket.once('
+            socket.write(
+                'GET /channel/' + channelId + ' HTTP/1.0\r\n'
+                + 'x-peercast-pcp:1\r\n'
+                + '\r\n');
         });
-        this.servers = [];
-    }
+    });
 }
 
 export = PcpHub;

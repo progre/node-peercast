@@ -1,9 +1,6 @@
-import http = require('http');
-import net = require('net');
 import events = require('events');
 import log4js = require('log4js');
 import PcpHub = require('./pcphub');
-import PcpSocket = require('./pcpsocket');
 
 var logger = log4js.getLogger();
 

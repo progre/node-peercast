@@ -24,6 +24,16 @@ class PcpSocket extends events.EventEmitter {
             logger.info('EOS: ' + localRemote + ', ' + this.socket.read());
         });
         var cache = new stream.PassThrough();
+        //socket.on('readable',() => {
+        //    logger.info('Incoming message: ' + localRemote);
+        //    var atom = this.reader.read(socket);
+        //    if (atom == null) {
+        //        logger.debug('wait');
+        //        return;
+        //    }
+        //    logger.info('Atom received: ' + atom.name);
+        //    this.emit(pcp.toName(atom.name), atom);
+        //});
         socket.on('data',(data: Buffer) => { // TODO: readableƒoƒO‚Á‚Ä‚é‚Á‚Û‚¢‚©‚ç‚È‚ñ‚Æ‚©‚µ‚Ä‚Ù‚µ‚¢
             cache.write(data);
             logger.info('Incoming message: ' + localRemote);
