@@ -3,6 +3,7 @@ import Atom = require('./atom');
 
 var logger = log4js.getLogger();
 
+const OK = 'ok\0\0';
 const HELLO = 'helo';
 const OLLEH = 'oleh';
 const HELLO_AGENT = 'agnt';
@@ -16,10 +17,13 @@ const HELLO_BC_ID = 'bcid';
 const OLLEH_REMOTE_IP = 'rip\0';
 //const OLLEH_DISABLE = 'dis\0';
 const HOST = 'host';
+const CHANNEL = 'chan';
 const QUIT = 'quit';
 
 export function toName(simpleName: string) {
     switch (simpleName) {
+        case OK:
+            return 'ok';
         case HELLO:
             return 'hello';
         case OLLEH:
@@ -28,6 +32,8 @@ export function toName(simpleName: string) {
             return 'host';
         case QUIT:
             return 'quit';
+        case CHANNEL:
+            return 'channel';
         default:
             logger.warn('Unsupported name: ' + simpleName);
             return simpleName;

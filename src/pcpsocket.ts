@@ -26,24 +26,12 @@ class PcpSocket extends events.EventEmitter {
         var cache = new stream.PassThrough();
         //socket.on('readable',() => {
         //    logger.info('Incoming message: ' + localRemote);
-        //    var atom = this.reader.read(socket);
-        //    if (atom == null) {
-        //        logger.debug('wait');
-        //        return;
-        //    }
-        //    logger.info('Atom received: ' + atom.name);
-        //    this.emit(pcp.toName(atom.name), atom);
+        //    read(socket, this.reader, this);
         //});
         socket.on('data',(data: Buffer) => { // TODO: readableバグってるっぽいからなんとかしてほしい
-            cache.write(data);
             logger.info('Incoming message: ' + localRemote);
-            var atom = this.reader.read(cache);
-            if (atom == null) {
-                logger.debug('wait');
-                return;
-            }
-            logger.info('Atom received: ' + atom.name);
-            this.emit(pcp.toName(atom.name), atom);
+            cache.write(data);
+            read(cache, this.reader, this);
         });
         logger.info('Connected: ' + localRemote);
     }
@@ -63,8 +51,10 @@ class PcpSocket extends events.EventEmitter {
 
     hello(port: number) {
         logger.info('Send hello: ' + this.localRemote);
-        var sessionId = new Buffer(16);
-        sessionId.fill(0);
+        var sessionId = new Buffer(16); // 0埋めでは本家でエラーになる
+        for (var i = 0; i < sessionId.length; i++) {
+            sessionId.writeUInt8(Math.floor(Math.random() * 256), i);
+        }
         write(this.socket, pcp.createHello(
             AGENT_NAME,
             0,
@@ -103,6 +93,18 @@ class PcpSocket extends events.EventEmitter {
     }
 }
 
+function read(readable: NodeJS.ReadableStream, reader: AtomReader, emitter: events.EventEmitter) {
+    for (; ;) {
+        var atom = reader.read(readable);
+        if (atom == null) {
+            logger.debug('wait');
+            return;
+        }
+        logger.info('Atom received: ' + atom.name);
+        emitter.emit(pcp.toName(atom.name), atom);
+    }
+}
+
 function write(stream: NodeJS.WritableStream, atom: Atom) {
     if (atom.name.length !== 4) {
         throw new Error('Invalid name: ' + atom.name);
@@ -125,6 +127,5 @@ function writeInt32LE(stream: NodeJS.WritableStream, value: number) {
     buffer.writeInt32LE(value, 0);
     stream.write(buffer);
 }
-
 
 export = PcpSocket;

@@ -1,9 +1,10 @@
-import net = require('net');
 import http = require('http');
+import net = require('net');
+import path = require('path');
+import stream = require('stream');
 import log4js = require('log4js');
 import PcpSocket = require('./pcpsocket');
 import HeaderReader = require('./headerreader');
-import path = require('path');
 
 var logger = log4js.getLogger();
 
@@ -12,7 +13,21 @@ class PcpHub {
 
     listen(port: number, connectionListener: (socket: PcpSocket) => void) {
         logger.info('listening... ' + port);
-        var server = http.createServer((req, res) => {
+        var cache = new stream.PassThrough();
+        var server = http.createServer();
+        server.on('connection',(socket: net.Socket) => {
+            logger.debug('connected: ' + socket.remoteAddress + ':' + socket.remotePort);
+            // http.Serverのsocketはreadableイベントを発行しない
+            socket.on('data',(data: Buffer) => {
+                cache.write(data);
+                if (!isPcpHeader(<Buffer>cache.read(12))) {
+                    return;
+                }
+                socket.removeListener('data', arguments.callee);
+                connectionListener(new PcpSocket(socket));
+            });
+        });
+        server.on('request',(req: http.IncomingMessage, res: http.ServerResponse) => {
             var url = path.normalize(req.url).split('?')[0].split('/');
             if (url[0] === 'channel') {
                 if (url.length < 1 || url[1].length !== 32) {
@@ -20,7 +35,6 @@ class PcpHub {
                     res.end();
                     return;
                 }
-                //var id = url[1];
                 // idにマッチする配信を持っているか？
                 // 無い
                 res.writeHead(404);
@@ -30,19 +44,6 @@ class PcpHub {
             res.writeHead(404);
             res.end();
         });
-        //var server = net.createServer(socket => {
-        //    var headerReader = new HeaderReader();
-        //    var readableListener = () => {
-        //        var header = headerReader.read(socket);
-        //        if (header == null) {
-        //            return;
-        //        }
-        //        headerReader = null;
-        //        socket.removeListener('readable', readableListener);
-        //    };
-        //    socket.addListener('readable', readableListener);
-        //    connectionListener(new PcpSocket(socket));
-        //});
         server.listen(port);
         //this.servers.push(server);
     }
@@ -105,16 +106,31 @@ function sendRequestWithHTTPModule(remoteAddress: string, remotePort: number, ch
     });
 }
 
-function sendRequestWithNetModule(remoteAddress: string, remotePort: number, channelId: string) {
-    return new Promise<{ statusCode: number; socket: net.Socket; }>((resolve, reject) => {
-        var socket = net.connect(remotePort, remoteAddress,() => {
-            socket.once('
-            socket.write(
-                'GET /channel/' + channelId + ' HTTP/1.0\r\n'
-                + 'x-peercast-pcp:1\r\n'
-                + '\r\n');
-        });
-    });
+//function sendRequestWithNetModule(remoteAddress: string, remotePort: number, channelId: string) {
+//    return new Promise<{ statusCode: number; socket: net.Socket; }>((resolve, reject) => {
+//        var socket = net.connect(remotePort, remoteAddress,() => {
+//            socket.write(
+//                'GET /channel/' + channelId + ' HTTP/1.0\r\n'
+//                + 'x-peercast-pcp:1\r\n'
+//                + '\r\n');
+//            var reader = new HeaderReader();
+//            socket.on('readable',() => {
+//                reader.read(socket);
+//            });
+//        });
+//    });
+//}
+
+function isPcpHeader(buffer: Buffer) {
+    if (buffer == null) {
+        return false;
+    }
+    if (buffer.slice(0, 4).toString('ascii') !== 'pcp\n') {
+        return false;
+    }
+    if (buffer.readInt32LE(4) !== 4) {
+        return false;
+    }
 }
 
 export = PcpHub;
