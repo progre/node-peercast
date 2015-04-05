@@ -73,6 +73,14 @@ class Atom {
         this.push(Atom.createContent(name, new Buffer(content)));
     }
 
+    pushString4Content(name: string, content: string) {
+        var str = new Buffer(content, 'ascii');
+        if (str.length != 4) {
+            throw new Error('Content length must be 4.');
+        }
+        this.push(Atom.createContent(name, str));
+    }
+
     pushGuidContent(name: string, content: Buffer) {
         this.push(Atom.createContent(name, content));
     }

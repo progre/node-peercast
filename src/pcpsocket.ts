@@ -4,7 +4,7 @@ import stream = require('stream');
 import log4js = require('log4js');
 import Atom = require('./atom');
 import AtomReader = require('./atomreader');
-import pcp = require('./pcp');
+import pcpAtom = require('./pcpatom');
 
 const AGENT_NAME = 'node-peercast';
 var logger = log4js.getLogger();
@@ -23,24 +23,19 @@ class PcpSocket extends events.EventEmitter {
         socket.on('end',() => {
             logger.info('EOS: ' + localRemote + ', ' + this.socket.read());
         });
-        var cache = new stream.PassThrough();
-        //socket.on('readable',() => {
-        //    logger.info('Incoming message: ' + localRemote);
-        //    read(socket, this.reader, this);
-        //});
-        socket.on('data',(data: Buffer) => { // TODO: readableバグってるっぽいからなんとかしてほしい
+        socket.on('readable',() => {
             logger.info('Incoming message: ' + localRemote);
-            cache.write(data);
-            read(cache, this.reader, this);
+            for (; ;) {
+                var atom = this.reader.read(socket);
+                if (atom == null) {
+                    logger.debug('wait');
+                    return;
+                }
+                logger.info('Atom received: ' + atom.name);
+                super.emit(pcpAtom.toName(atom.name), atom);
+            }
         });
         logger.info('Connected: ' + localRemote);
-    }
-
-    sendHTTPHeader(channelId: string) {
-        this.socket.write(
-            'GET /channel/' + channelId + ' HTTP/1.0\r\n'
-            + 'x-peercast-pcp:1\r\n'
-            + '\r\n');
     }
 
     sendPCPHeader() {
@@ -49,27 +44,23 @@ class PcpSocket extends events.EventEmitter {
         writeInt32LE(this.socket, 1);
     }
 
-    hello(port: number) {
+    hello(agentName: string, port: number) {
         logger.info('Send hello: ' + this.localRemote);
-        var sessionId = new Buffer(16); // 0埋めでは本家でエラーになる
-        for (var i = 0; i < sessionId.length; i++) {
-            sessionId.writeUInt8(Math.floor(Math.random() * 256), i);
-        }
-        write(this.socket, pcp.createHello(
-            AGENT_NAME,
-            0,
-            sessionId,
+        write(this.socket, pcpAtom.createHello(
+            agentName,
+            '\0\0\0\0',
+            createSessionId(),
             port,
             port,
             1218, // TODO: 何でこのバージョン？
-            sessionId));
+            new Buffer(16)));
     }
 
     olleh() {
         logger.info('Send olleh: ' + this.localRemote);
         var sessionId = new Buffer(16);
         sessionId.fill(0);
-        write(this.socket, pcp.createOlleh(
+        write(this.socket, pcpAtom.createOlleh(
             AGENT_NAME,
             sessionId,
             0,
@@ -78,30 +69,17 @@ class PcpSocket extends events.EventEmitter {
     }
 
     quit() {
-        // 既に切断済みなら何もしない
-        if (this.socket == null) {
-            return;
-        }
         logger.info('Send quit: ' + this.localRemote);
-        write(this.socket, pcp.createQuit());
+        write(this.socket, pcpAtom.createQuit());
+    }
+
+    end() {
         this.socket.end();
     }
 
     private get localRemote() {
         return this.socket.localAddress + ':' + this.socket.localPort + ', '
             + this.socket.remoteAddress + ':' + this.socket.remotePort;
-    }
-}
-
-function read(readable: NodeJS.ReadableStream, reader: AtomReader, emitter: events.EventEmitter) {
-    for (; ;) {
-        var atom = reader.read(readable);
-        if (atom == null) {
-            logger.debug('wait');
-            return;
-        }
-        logger.info('Atom received: ' + atom.name);
-        emitter.emit(pcp.toName(atom.name), atom);
     }
 }
 
@@ -126,6 +104,14 @@ function writeInt32LE(stream: NodeJS.WritableStream, value: number) {
     var buffer = new Buffer(4);
     buffer.writeInt32LE(value, 0);
     stream.write(buffer);
+}
+
+function createSessionId() {
+    var sessionId = new Buffer(16);
+    for (var i = 0; i < sessionId.length; i++) {
+        sessionId.writeUInt8(Math.floor(Math.random() * 256), i);
+    }
+    return sessionId;
 }
 
 export = PcpSocket;
